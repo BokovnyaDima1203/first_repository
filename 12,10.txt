@@ -1,0 +1,168 @@
+#include <iostream>
+#include <string>
+#include <list>
+#include <iterator>
+#include <algorithm>
+#include <functional>
+
+using namespace std;
+
+class Car {
+	string name;
+	int year;
+	float volume, cost;
+public:
+	Car() = delete;
+	Car(string name_, int year_, float volume_, float cost_) {
+		name = name_;
+		year = year_;
+		volume = volume_;
+		cost = cost_;
+	}
+	Car(const Car& c) = default;
+	Car(Car&& c) = default;
+	Car& operator=(const Car& obj) = default;
+	Car& operator=(Car&& obj) = default;
+	void Show() const {
+		cout << "=========Car=========" << endl;
+		cout << "Name: " << name << endl;
+		cout << "Year: " << year << endl;
+		cout << "Volume: " << volume << endl;
+		cout << "Cost: " << cost << endl;
+		cout << "=====================" << endl;
+	}
+	string GetName() { return name; }
+	int GetYear() { return year; }
+	float GetVolume() { return volume; }
+	float GetCost() { return cost; }
+};
+
+void pause();
+void printList(Car& obj);
+Car addCar();
+list<Car> deleteCar(list<Car>& CarList);
+list<Car> sorting(list<Car>& CarList);
+bool sortYear(Car& first, Car& second);
+bool sortVolume(Car& first, Car& second);
+bool sortCost(Car& first, Car& second);
+
+void main() {
+	char  key;
+	bool ok = true;
+	Car obj1("Car1", 2000, 1.5, 10000);
+	Car obj2("Car2", 2005, 1.8, 15000);
+	Car obj3("Car3", 2010, 2.0, 18000);
+	Car obj4("Car4", 2012, 1.4, 8000);
+	Car obj5("Car5", 2008, 1.9, 9500);
+	Car arr[] = { obj1,obj2, obj3, obj4, obj5 };
+	list<Car> CarList(arr, arr + 5);
+
+	do {
+		cout << "\n1.Show car list" << endl;
+		cout << "2.Add new car into list" << endl;
+		cout << "3.Delete car from list" << endl;
+		cout << "4.Search car by parameter" << endl;
+		cout << "5.Sort list" << endl;
+		cout << "6.Exit" << endl;
+		cout << "\tSelect item" << endl;
+		cin >> key;
+		switch (key) {
+		case '1': {
+			for_each(CarList.begin(), CarList.end(), printList);
+			pause();
+			break;
+		}
+		case '2': {
+			CarList.push_back(addCar());
+			pause();
+			break;
+		}
+		case '3': {
+			deleteCar(CarList);
+			pause();
+			break;
+		}
+		case '4': {
+
+			pause();
+			break;
+		}
+		case '5': {
+			CarList = sorting(CarList);
+			pause();
+			break;
+		}
+		case '6': {
+			ok = false;
+			break;
+		}
+		default: break;		
+		}
+	} while (ok);
+	system("pause");
+}
+
+void pause() {
+	system("pause");
+	system("cls");
+}
+
+void printList(Car& obj) {
+	obj.Show();
+}
+
+Car addCar() {
+	string n;
+	int y;
+	float v, c;
+	cout << "Input name: "; cin >> n;
+	cout << "Input year: "; cin >> y;
+	cout << "Input volume: "; cin >> v;
+	cout << "Input cost: "; cin >> c;
+	Car temp(n, y, v, c);
+	return temp;
+}
+
+list<Car> deleteCar(list<Car>& CarList) {
+	string name_;
+	int countToDelete = 0;
+	cout << "Input car name to delete: "; cin >> name_;
+	list<Car>::iterator it = CarList.begin();
+	while (it != CarList.end()) {
+		if (it->GetName() == name_) {
+			cout << "Delete " << it->GetName() << " element" << endl;
+			CarList.erase(it);
+			countToDelete++;
+		}
+		it++;
+		if (countToDelete == 0) cout << "No elements found" << endl;
+	}
+	return CarList;
+}
+
+list<Car> sorting(list<Car>& CarList) {
+	char choice;
+	cout << "Select parametr for sorting: " << endl;
+	cout << "1 - sort by year" << endl;
+	cout << "2 - sort by volume" << endl;
+	cout << "3 - sort by cost" << endl;
+	cin >> choice;
+	if (choice == '1') CarList.sort(sortYear);
+	else if (choice == '2') CarList.sort(sortVolume);
+		 else if (choice == '3') CarList.sort(sortCost);
+			  else cout << "Incorrect choice" << endl;
+	return CarList;
+}
+
+bool sortYear(Car& first, Car& second) {
+	return (first.GetYear() > second.GetYear());
+}
+
+bool sortVolume(Car& first, Car& second) {
+	return (first.GetVolume() > second.GetVolume());
+}
+
+bool sortCost(Car& first, Car& second) {
+	return (first.GetCost() > second.GetCost());
+}
+
